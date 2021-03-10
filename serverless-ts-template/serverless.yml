@@ -1,0 +1,33 @@
+service: code-test-riyadh
+
+provider:
+    name: aws
+    runtime: nodejs10.x
+    stage: ${opt:stage, 'dev'}
+    region: ca-central-1
+
+functions:
+    conditions:
+        handler: handler.conditions
+        events:
+            - http:
+                  path: api
+                  method: get
+                  cors: true
+
+plugins:
+    - serverless-plugin-typescript
+    - serverless-offline
+    - serverless-plugin-include-dependencies
+
+package:
+    include:
+        - handler.ts
+
+custom:
+    includeDependencies:
+        always:
+            - 'src/lib/**'
+    serverless-offline:
+        httpPort: 5001
+        noPrependStageInUrl: true
